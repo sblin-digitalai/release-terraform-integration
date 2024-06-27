@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+
+  digitalai-release:
+    build: digitalai-release
+    ports:
+      - "5516:5516"
+    environment:
+      - ADMIN_PASSWORD=admin
+      - ACCEPT_EULA=Y
+      - SERVER_URL=http://host.docker.internal:5516
+
+  digitalai-release-setup:
+    build: digitalai-release-setup
+    depends_on:
+      - digitalai-release
+    command: ["apply", "-v", "-f", "/data/instance-configuration.yaml"]
+    volumes:
+      - ./digitalai-release-setup:/data:ro
+
+  digitalai-release-remote-runner:
+    build: digitalai-release-remote-runner
+    depends_on:
+      - digitalai-release-setup
+    environment:
+      - RELEASE_RUNNER_RELEASE_URL=${RELEASE_RUNNER_RELEASE_URL}
+      - PROJECT_NAME=${RUNNER_PROJECT_NAME}
+      - VERSION=${RUNNER_PROJECT_VERSION}
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp:/tmp
+
+  container-registry:
+    image: registry:2
+    ports:
+      - "5050:5000"
+    volumes:
+      - .:/var/lib/registry
+
+  container-registry-ui:
+    image: parabuzzle/craneoperator:latest
+    ports:
+      - "8086:80"
+    environment:
+      - REGISTRY_HOST=container-registry
+      - REGISTRY_PORT=5000
+      - REGISTRY_PROTOCOL=http
+      - REGISTRY_ALLOW_DELETE=true
+      - SSL_VERIFY=false
+      - TITLE=Digital.ai Release Docker Registry
+    depends_on:
+      - container-registry

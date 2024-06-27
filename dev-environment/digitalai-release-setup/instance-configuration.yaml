@@ -1,0 +1,37 @@
+apiVersion: xl-release/v1
+kind: Templates
+spec:
+  - type: xlrelease.ThemeSettings
+    id: Configuration/settings/ThemeSettings
+    headerName: SDK Environment
+    headerAccentColor: ORANGE
+    description: Instance for testing plugins build with the Integration SDK
+    loginMessage: |-
+      Welcome to the Digital.ai Release SDK Environment!
+      Use this server to test integrations plugins
+
+---
+apiVersion: xl-release/v1
+kind: Users
+spec:
+  - username: remote-runner
+    password: !value password
+    name: Remote Runner
+    enabled: true
+
+---
+apiVersion: xl-release/v1
+kind: Roles
+spec:
+  - name: Runners
+    principals:
+      - remote-runner
+
+---
+apiVersion: xl-release/v1
+kind: Permissions
+spec:
+  - global:
+      - role: Runners
+        permissions:
+          - runner#registration

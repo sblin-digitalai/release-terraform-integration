@@ -1,0 +1,33 @@
+<synthetic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://www.xebialabs.com/deployit/synthetic"
+           xsi:schemaLocation="http://www.xebialabs.com/deployit/synthetic synthetic.xsd">
+
+    <type type="containerTerraform.BaseTask" extends="xlrelease.ContainerTask" virtual="true">
+        <property name="image" required="true" hidden="true" default="@registry.url@/@registry.org@/@project.name@:@project.version@" transient="true"/>
+        <property name="iconLocation" default="release-terraform-integration.png" hidden="true"/>
+        <property name="taskColor" hidden="true" default="#667385"/>
+    </type>
+
+    <type type="containerTerraform.Apply" extends="containerTerraform.BaseTask" label="Terraform: Apply (Container)"  description="Executes the Terraform module using the apply command">
+        <property name="documentationPage" required="false" hidden="true" default="how-to/container-terraform-plugin.html#apply-container-" />
+        <property category="input" name="terraformClientVersion" readonly="true" required="false" kind="string" default="1.5.0" description="The installed terraform client version"/>
+        <property category="input" name="gitUrl" label="Git URL" kind="string" description="Git repository URL"/>
+        <property category="input" name="branch" required="false" kind="string" description="Git branch"/>
+        <property category="input" name="gitDirPath" required="false" kind="string" label="Git directory path"/>
+        <property category="input" name="gitToken" required="false" kind="string" password="true" description="Personal token for connecting to git"/>
+        <property name="environmentVariables" category="input" size="large" required="false" password="true" label="Environment Variables"  description="Pass terraform environment variables the following format: {'VAR1': 'value1', 'VAR2': 'value2'}"/>
+        <property name="sshKeys" category="input" size="large" required="false" label="ssh keys" description="Content to set in the ~/.ssh/id_rsa file" />
+        <property name="knownHosts" category="input" size="large" required="false" label="known hosts" description="Content to set in the ~/.ssh/known_hosts file" />
+        <property name="outputVariables" category="output" kind="map_string_string" description="Return variable and values for a Terraform module"/>
+    </type>
+
+    <type type="containerTerraform.Destroy" extends="containerTerraform.BaseTask" label="Terraform: Destroy (Container)"  description="Executes the Terraform module using the destroy command">
+        <property name="documentationPage" required="false" hidden="true" default="how-to/container-terraform-plugin.html#destroy-container-" />
+        <property category="input" name="terraformClientVersion" readonly="true" required="false" kind="string" default="1.5.0" description="The installed terraform client version"/>
+        <property category="input" name="gitUrl" label="Git URL" kind="string" description="Git repository URL"/>
+        <property category="input" name="branch" required="false" kind="string" description="Git branch"/>
+        <property category="input" name="gitDirPath" required="false" kind="string" label="Git directory path"/>
+        <property category="input" name="gitToken" required="false" kind="string" password="true" description="Personal token for connecting to git"/>
+        <property name="environmentVariables" category="input" size="large" required="false" password="true" label="Environment Variables"  description="Pass terraform environment variables the following format: {'VAR1': 'value1', 'VAR2': 'value2'}"/>
+    </type>
+</synthetic>
